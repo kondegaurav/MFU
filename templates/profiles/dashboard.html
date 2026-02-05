@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile Dashboard - MFU Web Portal{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <i class="bi bi-trophy-fill me-2"></i>
+            MFU Web Portal
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle me-1"></i>
+                        {{ user.get_short_name }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'profiles:dashboard' %}">
+                            <i class="bi bi-person me-2"></i>Profile
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'authentication:logout' %}">
+                            <i class="bi bi-box-arrow-right me-2"></i>Logout
+                        </a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <!-- Dashboard Tabs (will be implemented in Phase 5) -->
+    <ul class="nav nav-tabs mb-4" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link active" href="{% url 'profiles:dashboard' %}">
+                <i class="bi bi-person me-2"></i>
+                User Profile
+            </a>
+        </li>
+
+        {% for role in roles %}
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" href="#" title="Coming soon">
+                    <i class="{{ role.dashboard_icon }} me-2"></i>
+                    {{ role.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Profile Content -->
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-person-badge me-2"></i>
+                        Profile Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-4 fw-bold">Name:</div>
+                        <div class="col-sm-8">{{ user.get_full_name }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 fw-bold">Email:</div>
+                        <div class="col-sm-8">
+                            {{ user.email }}
+                            {% if user.email_confirmed %}
+                                <span class="badge bg-success ms-2">
+                                    <i class="bi bi-check-circle"></i> Verified
+                                </span>
+                            {% else %}
+                                <span class="badge bg-warning ms-2">
+                                    <i class="bi bi-exclamation-circle"></i> Not Verified
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 fw-bold">Member Since:</div>
+                        <div class="col-sm-8">{{ user.date_joined|date:"F j, Y" }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4 fw-bold">Account Status:</div>
+                        <div class="col-sm-8">
+                            {% if user.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-danger">Inactive</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Roles Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="bi bi-person-check me-2"></i>
+                        Your Roles
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if roles %}
+                        <ul class="list-unstyled mb-0">
+                            {% for role in roles %}
+                                <li class="mb-2">
+                                    <i class="{{ role.dashboard_icon }} me-2 text-primary"></i>
+                                    {{ role.name }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted mb-0">No roles assigned yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Role Tags Card -->
+            {% if tags %}
+                <div class="card shadow-sm">
+                    <div class="card-header bg-warning text-dark">
+                        <h6 class="mb-0">
+                            <i class="bi bi-award me-2"></i>
+                            Special Privileges
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            {% for tag in tags %}
+                                <li class="mb-2">
+                                    <span class="badge bg-warning text-dark">
+                                        {{ tag.name }}
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
