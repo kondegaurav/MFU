@@ -1,0 +1,240 @@
+**(Django Project Generation – MFU Web Portal)**
+
+### System / Role Instruction
+
+You are a **principal Django architect and backend lead** with experience building **role-based portals, OAuth authentication, and multi-dashboard systems** for production environments.
+
+Think carefully, design first, then generate code.
+
+---
+
+### Project Context
+
+Build a **production-grade Django web application** named **MFU Web Portal** based on the following requirements.
+This is **not a demo or POC**—design for extensibility, security, and real-world usage.
+
+---
+
+## 1. Technical Constraints (Must Follow)
+
+* Backend: **Django (latest LTS)**
+* Database: **MySQL**
+* Hosting target: **GoDaddy shared hosting**
+* Authentication:
+
+  * **Google OAuth2 Single Sign-On**
+  * Email-based registration with confirmation link
+* Frontend:
+
+  * Django Templates (Bootstrap or equivalent)
+  * Role-based dashboards shown as **tabbed navigation**
+* Architecture:
+
+  * Modular Django apps
+  * Explicit service layer where needed
+  * Clean separation of concerns
+  * RBAC enforced at view & template level
+
+---
+
+## 2. User Roles & Tags
+
+Users may have **multiple roles**.
+
+### Roles
+
+* Admin
+* Coach
+* Parent
+* Athlete
+* Finance & Inventory Manager
+
+### Role Tags (Conditional Privileges)
+
+* **Center Head** → Admin
+* **Head Coach** → Coach
+
+---
+
+## 3. Authentication & User Lifecycle
+
+### Login
+
+* Single login page for all users
+* Google SSO as primary login
+* Manual login fallback (username/email + password)
+* Fields:
+
+  * Username / Email
+  * Password
+  * Login button
+  * Clear button
+
+### Post-Login Behavior
+
+* Show **only dashboards authorized** for that user
+* Each dashboard appears as a **separate tab**
+* **User Profile tab is always visible**
+
+---
+
+### Registration
+
+* Fields:
+
+  * Name
+  * Email
+  * Password
+* Flow:
+
+  1. User registers
+  2. System sends confirmation email
+  3. User confirms via link
+  4. Account activated
+  5. Redirect to login page
+* Users remain **inactive until confirmation**
+
+---
+
+## 4. Dashboards (Each in Its Own Tab)
+
+### 4.1 User Profile Dashboard
+
+* Name
+* Address
+* Phone
+* Email (read-only)
+* Membership IDs for enrolled children
+
+---
+
+### 4.2 Admin Dashboard
+
+* Manage Centers
+* Manage Coaches
+* Manage Events & Event Registrations *(Center Head only)*
+* Manage Volunteering Opportunities *(Center Head only)*
+* Athlete Scores
+* Athlete Ranking Generation
+* Raise Equipment Requests *(Center Head only)*
+
+---
+
+### 4.3 Coach Dashboard
+
+* Certification Management (Apply / Track / View)
+* Athlete Attendance (per session)
+* Volunteering Hours logging
+* Athlete Evaluation (twice yearly)
+* Create Competition Teams *(Head Coach only)*
+
+---
+
+### 4.4 Parent Dashboard
+
+* Manage Children Enrollments
+* View National Ranking Chart *(public link, age ≥ 12)*
+* View Child Scores & Rankings *(age ≥ 12)*
+* View Evaluation Certificates *(age ≥ 12)*
+* Apply for Volunteering (self or child)
+* View Volunteering Hours & Certificates *(age ≥ 12)*
+* Register Children for Events
+* Rent MFU Equipment
+
+---
+
+### 4.5 Athlete Dashboard
+
+* View Scores
+* View Rankings
+
+---
+
+### 4.6 Finance & Inventory Dashboard
+
+* Accept Parent Registrations
+* Manage Inventory
+* Handle Equipment Requests
+* Manage Equipment Rental Requests
+
+---
+
+## 5. Data Modeling Expectations
+
+Design Django models for:
+
+* Users & Roles (Many-to-Many)
+* Role Tags
+* Centers
+* Coaches
+* Parents
+* Athletes
+* Parent-Child relationships
+* Events & Registrations
+* Scores & Rankings
+* Evaluations & Certificates
+* Volunteering Opportunities & Hours
+* Equipment, Inventory, Rentals
+* Equipment Requests
+
+Include:
+
+* Proper foreign keys
+* Indexing where appropriate
+* Soft deletes where useful
+* `created_at` / `updated_at` audit fields
+
+---
+
+## 6. Authorization Rules
+
+* Enforce RBAC using:
+
+  * Django permissions
+  * Custom decorators / mixins
+* Restrict:
+
+  * Dashboard visibility
+  * CRUD operations
+  * Tag-based access (`Center Head`, `Head Coach`)
+* Authorization must be enforced **both in views and templates**
+
+---
+
+## 7. Output Instructions (IMPORTANT)
+
+Generate output in **this exact order**:
+
+1. **High-level architecture overview**
+2. Django project & app structure
+3. Data models (with code)
+4. Authentication setup (Google OAuth + email verification)
+5. Role & permission implementation strategy
+6. Dashboard routing & access control
+7. Example views + URLs
+8. Sample dashboard templates
+9. Django admin configuration
+10. Migration & database strategy
+11. Deployment notes specific to GoDaddy shared hosting
+
+---
+
+## 8. Non-Negotiable Rules
+
+* Do NOT simplify business rules
+* Do NOT skip role/tag restrictions
+* Do NOT collapse dashboards
+* Assume real users, real data, real scale
+* Prioritize clarity over brevity
+
+---
+
+### Final Instruction to Claude
+
+Before writing code:
+
+* Think through the data model
+* Validate role relationships
+* Ensure no dashboard leaks unauthorized access
+
+Proceed carefully and generate **production-ready Django code**.

@@ -1,0 +1,22 @@
+# Core Django
+Django==5.2.11
+
+# Database
+mysqlclient==2.2.4  # MySQL driver for Python
+
+# Authentication
+django-allauth==65.2.0  # Google OAuth2 and email auth
+
+# Environment variables
+python-decouple==3.8
+
+# Forms & Widgets
+django-crispy-forms==2.3
+crispy-bootstrap5==2025.6
+
+# Development
+django-debug-toolbar==4.4.6
+
+# Production
+gunicorn==23.0.0  # WSGI server
+whitenoise==6.7.0  # Static file serving
