@@ -5,51 +5,52 @@
 
 {% block content %}
 <div class="container">
-  <div class="row justify-content-center align-items-center min-vh-100">
-    <div class="col-md-6 col-lg-5">
-      <div class="card shadow">
-        <div class="card-body p-5">
-          <h2 class="fw-bold text-primary mb-3">Sign In</h2>
+    <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <h2 class="fw-bold text-primary mb-3">Sign In</h2>
 
-          {% if form.errors %}
-            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
-          {% endif %}
+                    {% if form.errors %}
+                    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                    {% endif %}
 
-          <form method="post" action="{% url 'account_login' %}">
-            {% csrf_token %}
+                    <form method="post" action="{% url 'account_login' %}">
+                        {% csrf_token %}
 
-            <div class="mb-3">
-              <label for="id_login" class="form-label">Email</label>
-              {{ form.login|as_crispy_field }}
+                        <div class="mb-3">
+                            <label for="id_login" class="form-label">Email</label>
+                            {{ form.login|as_crispy_field }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_password" class="form-label">Password</label>
+                            {{ form.password|as_crispy_field }}
+                        </div>
+
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-primary">Sign In</button>
+                        </div>
+
+                        <div class="text-center mb-2">
+                            <a href="{% url 'account_reset_password' %}">Forgot your password?</a>
+                        </div>
+
+                        <div class="text-center">
+                            <p class="text-muted">Don't have an account? <a href="{% url 'account_signup' %}">Sign
+                                    up</a></p>
+                        </div>
+                    </form>
+
+                    <hr>
+                    <div class="text-center mt-3">
+                        <p class="h5">Or use a third-party</p>
+                        {% providers_media_js %}
+                        {% include "socialaccount/snippets/providers_list.html" %}
+                    </div>
+                </div>
             </div>
-
-            <div class="mb-3">
-              <label for="id_password" class="form-label">Password</label>
-              {{ form.password|as_crispy_field }}
-            </div>
-
-            <div class="d-grid gap-2 mb-3">
-              <button type="submit" class="btn btn-primary">Sign In</button>
-            </div>
-
-            <div class="text-center mb-2">
-              <a href="{% url 'account_reset_password' %}">Forgot your password?</a>
-            </div>
-
-            <div class="text-center">
-              <p class="text-muted">Don't have an account? <a href="{% url 'account_signup' %}">Sign up</a></p>
-            </div>
-          </form>
-
-          <hr>
-          <div class="text-center mt-3">
-            <p class="h5">Or use a third-party</p>
-            {% providers_media_js %}
-            {% include "socialaccount/snippets/providers_list.html" %}
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 {% endblock %}

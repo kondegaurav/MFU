@@ -139,6 +139,10 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
+# Use a custom signup form to collect first_name and last_name
+ACCOUNT_FORMS = {
+    'signup': 'apps.authentication.forms.CustomSignupForm'
+}
 ACCOUNT_LOGOUT_ON_GET = False
 LOGIN_REDIRECT_URL = '/profiles/dashboard/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
