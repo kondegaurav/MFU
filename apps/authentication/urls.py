@@ -16,6 +16,10 @@ urlpatterns = [
     # Registration
     path('register/', views.custom_register, name='register'),
 
+    # Password reset
+    path('forgot-password/', views.forgot_password, name='forgot_password'),
+    path('reset-password/<uidb64>/<token>/', views.reset_password, name='reset_password'),
+
     # Email confirmation success
     path('email-confirmation-sent/', views.email_confirmation_sent, name='email_confirmation_sent'),
 

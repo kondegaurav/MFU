@@ -20,7 +20,8 @@
             <div class="card shadow h-100">
                 <div class="card-header bg-primary text-white">
                     <h5 class="m-0">{{ child_info.child.get_full_name }}</h5>
-                    <small>Age {{ child_info.age }} • Member since {{ child_info.child.registration_date|date:"M Y" }}</small>
+                    <small>Age {{ child_info.age }} • Member since {{ child_info.child.registration_date|date:"M Y"
+                        }}</small>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
@@ -33,7 +34,8 @@
                             </a>
                             {% endif %}
                             {% if child_info.can_view_rankings %}
-                            <a href="{% url 'parent_portal:child_rankings' child_info.child.id %}" class="list-group-item list-group-item-action">
+                            <a href="{% url 'parent_portal:child_rankings' child_info.child.id %}"
+                                class="list-group-item list-group-item-action">
                                 <span class="badge bg-success float-end">Enabled</span>
                                 View Rankings
                             </a>
@@ -44,7 +46,8 @@
                             </div>
                             {% endif %}
                             {% if child_info.can_view_certificates %}
-                            <a href="{% url 'parent_portal:child_certificates' child_info.child.id %}" class="list-group-item list-group-item-action">
+                            <a href="{% url 'parent_portal:child_certificates' child_info.child.id %}"
+                                class="list-group-item list-group-item-action">
                                 <span class="badge bg-success float-end">Enabled</span>
                                 View Certificates
                             </a>
@@ -53,7 +56,8 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <a href="{% url 'parent_portal:child_details' child_info.child.id %}" class="btn btn-sm btn-primary">
+                    <a href="{% url 'parent_portal:child_details' child_info.child.id %}"
+                        class="btn btn-sm btn-primary">
                         View Full Profile
                     </a>
                 </div>
@@ -64,7 +68,8 @@
     {% else %}
     <div class="alert alert-info" role="alert">
         <h4 class="alert-heading">No Children Linked</h4>
-        <p>No children have been linked to your account. Please contact administration to set up parent-child relationships.</p>
+        <p>No children have been linked to your account. Please contact administration to set up parent-child
+            relationships.</p>
     </div>
     {% endif %}
 
