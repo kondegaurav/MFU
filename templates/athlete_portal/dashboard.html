@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load permission_tags %}
+
+{% block title %}Athlete Dashboard - MFU Portal{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="h2">Welcome, {{ athlete.get_full_name }}</h1>
+            <p class="text-muted">Age {{ athlete.age }} • Member Since {{ athlete.registration_date|date:"M Y" }}</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            {% if rankings %}
+            <div class="alert alert-info mb-0">
+                <strong>Your Best Ranking:</strong> #{{ rankings.0.rank }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Overview Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Active Rankings</h5>
+                    <h3 class="text-primary">{{ rankings|length }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total Scores</h5>
+                    <h3 class="text-success">{{ recent_scores|length }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Certificates</h5>
+                    <h3 class="text-warning">{{ certificates|length }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Teams</h5>
+                    <h3 class="text-info">{{ team_memberships|length }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Training -->
+    {% if upcoming_training %}
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="m-0">Upcoming Training Sessions</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for session in upcoming_training %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ session.title }}</h6>
+                            <small>{{ session.start_time|date:"M d" }}</small>
+                        </div>
+                        <p class="mb-1"><small>Coach: {{ session.coach.user.get_full_name }}</small></p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Scores -->
+        {% if recent_scores %}
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h6 class="m-0">Recent Scores</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for score in recent_scores|slice:":5" %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ score.event.name }}</h6>
+                            <strong>{{ score.score }}</strong>
+                        </div>
+                        <p class="mb-1"><small class="text-muted">{{ score.recorded_at|date:"M d, Y" }}</small></p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Navigation Links -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="btn-group mb-4" role="group">
+                <a href="{% url 'athlete_portal:rankings' %}" class="btn btn-outline-primary">All Rankings</a>
+                <a href="{% url 'athlete_portal:scores' %}" class="btn btn-outline-success">All Scores</a>
+                <a href="{% url 'athlete_portal:certificates' %}" class="btn btn-outline-warning">Certificates</a>
+                <a href="{% url 'athlete_portal:teams' %}" class="btn btn-outline-info">My Teams</a>
+                <a href="{% url 'athlete_portal:events' %}" class="btn btn-outline-secondary">Events</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

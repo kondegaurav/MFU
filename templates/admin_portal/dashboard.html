@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load permission_tags %}
+
+{% block title %}Admin Dashboard - MFU Portal{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 class="h2">Admin Dashboard</h1>
+            <p class="text-muted">System Overview & Statistics</p>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-primary font-weight-bold text-uppercase mb-1">Total Centers</div>
+                    <div class="h3 mb-0">{{ stats.total_centers }}</div>
+                    <small class="text-muted">{{ stats.active_centers }} active</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-success font-weight-bold text-uppercase mb-1">Events</div>
+                    <div class="h3 mb-0">{{ stats.total_events }}</div>
+                    <small class="text-muted">{{ stats.ongoing_events }} ongoing</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-info font-weight-bold text-uppercase mb-1">Athletes</div>
+                    <div class="h3 mb-0">{{ stats.total_athletes }}</div>
+                    <small class="text-muted">{{ stats.active_athletes }} active</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-warning font-weight-bold text-uppercase mb-1">Pending Volunteers</div>
+                    <div class="h3 mb-0">{{ stats.pending_volunteers }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Events -->
+    {% if upcoming_events %}
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="m-0">Upcoming Events (Next 7 Days)</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for event in upcoming_events %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ event.name }}</h6>
+                                <small>{{ event.start_date|date:"M d" }}</small>
+                            </div>
+                            <p class="mb-1"><small class="text-muted">{{ event.center.name }}</small></p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        {% if recent_transactions %}
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h6 class="m-0">Recent Transactions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for transaction in recent_transactions %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ transaction.description }}</h6>
+                                <strong>${{ transaction.amount }}</strong>
+                            </div>
+                            <small class="text-muted">{{ transaction.transaction_date|date:"M d, Y" }}</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Recent Registrations -->
+    {% if recent_registrations %}
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h6 class="m-0">Recent Event Registrations</h6>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Participant</th>
+                                <th>Event</th>
+                                <th>Registration Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reg in recent_registrations %}
+                            <tr>
+                                <td>{{ reg.participant.get_full_name }}</td>
+                                <td>{{ reg.event.name }}</td>
+                                <td>{{ reg.registered_at|date:"M d, Y" }}</td>
+                                <td>
+                                    <span class="badge bg-{{ reg.get_status_display|lower }}">
+                                        {{ reg.get_status_display }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Admin Actions -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h6 class="m-0">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <a href="/admin/" class="btn btn-primary btn-sm">Go to Django Admin</a>
+                    <a href="{% url 'admin_portal:centers' %}" class="btn btn-info btn-sm">Manage Centers</a>
+                    <a href="{% url 'admin_portal:events' %}" class="btn btn-warning btn-sm">Manage Events</a>
+                    <a href="{% url 'admin_portal:users' %}" class="btn btn-secondary btn-sm">Manage Users</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load permission_tags %}
+
+{% block title %}Parent Dashboard - MFU Portal{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="h2 mb-4">Parent Dashboard</h1>
+
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% else %}
+
+    {% if children_data %}
+    <div class="row">
+        {% for child_info in children_data %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="m-0">{{ child_info.child.get_full_name }}</h5>
+                    <small>Age {{ child_info.age }} • Member since {{ child_info.child.registration_date|date:"M Y" }}</small>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="text-muted">Available Information</h6>
+                        <div class="list-group">
+                            {% if child_info.can_view_scores %}
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <span class="badge bg-success float-end">Enabled</span>
+                                View Scores & Results
+                            </a>
+                            {% endif %}
+                            {% if child_info.can_view_rankings %}
+                            <a href="{% url 'parent_portal:child_rankings' child_info.child.id %}" class="list-group-item list-group-item-action">
+                                <span class="badge bg-success float-end">Enabled</span>
+                                View Rankings
+                            </a>
+                            {% else %}
+                            <div class="list-group-item text-muted">
+                                <span class="badge bg-secondary float-end">Age restricted</span>
+                                View Rankings (12+ only)
+                            </div>
+                            {% endif %}
+                            {% if child_info.can_view_certificates %}
+                            <a href="{% url 'parent_portal:child_certificates' child_info.child.id %}" class="list-group-item list-group-item-action">
+                                <span class="badge bg-success float-end">Enabled</span>
+                                View Certificates
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'parent_portal:child_details' child_info.child.id %}" class="btn btn-sm btn-primary">
+                        View Full Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">No Children Linked</h4>
+        <p>No children have been linked to your account. Please contact administration to set up parent-child relationships.</p>
+    </div>
+    {% endif %}
+
+    {% endif %}
+</div>
+{% endblock %}

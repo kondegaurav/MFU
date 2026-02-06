@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load permission_tags %}
+
+{% block title %}Coach Dashboard - MFU Portal{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="h2">Coach Dashboard</h1>
+            <p class="text-muted">Welcome, {{ coach.user.get_full_name }}</p>
+        </div>
+        {% if coach.is_head_coach %}
+        <div class="col-md-4 text-md-end">
+            <span class="badge bg-success">Head Coach</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Overview Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Teams</h5>
+                    <h3 class="text-primary">{{ total_teams }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Athletes</h5>
+                    <h3 class="text-success">{{ total_athletes }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Upcoming Sessions</h5>
+                    <h3 class="text-info">{{ upcoming_sessions|length }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Experience</h5>
+                    <h3 class="text-warning">{{ coach.experience_years }}y</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teams & Sessions -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="m-0">Your Teams</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for team in teams %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ team.name }}</h6>
+                            <span class="badge bg-info">{{ team.athletes.count }} athletes</span>
+                        </div>
+                        <small class="text-muted">{{ team.category }}</small>
+                    </div>
+                    {% empty %}
+                    <div class="list-group-item text-muted">No teams assigned</div>
+                    {% endfor %}
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'coach_portal:teams' %}" class="btn btn-sm btn-outline-primary">View All Teams</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Training Sessions -->
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h6 class="m-0">Upcoming Training Sessions</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for session in upcoming_sessions %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ session.title }}</h6>
+                            <small>{{ session.start_time|date:"M d, Y" }}</small>
+                        </div>
+                        <small class="text-muted">{{ session.center.name }}</small>
+                    </div>
+                    {% empty %}
+                    <div class="list-group-item text-muted">No upcoming sessions</div>
+                    {% endfor %}
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'coach_portal:training_sessions' %}" class="btn btn-sm btn-outline-success">View All Sessions</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Athletes by Ranking -->
+    {% if athlete_rankings %}
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h6 class="m-0">Top Athletes by Ranking</h6>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Athlete</th>
+                                <th>Category</th>
+                                <th>Score</th>
+                                <th>Rank</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ranking in athlete_rankings %}
+                            <tr>
+                                <td>{{ ranking.athlete.get_full_name }}</td>
+                                <td>{{ ranking.category }}</td>
+                                <td>{{ ranking.total_score }}</td>
+                                <td><strong>#{{ ranking.rank }}</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Coach Info -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h6 class="m-0">Coach Information</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Specializations:</strong> {{ coach.specializations|default:"Not specified" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Certifications:</strong> {{ coach.certifications|default:"Not specified" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
