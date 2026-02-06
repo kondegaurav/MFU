@@ -19,6 +19,9 @@ urlpatterns = [
     # User profiles
     path('profiles/', include('apps.profiles.urls')),
 
+    # Core permission examples
+    path('core/', include('apps.core.urls')),
+
     # Portal dashboards
     path('admin-portal/', include('apps.admin_portal.urls')),
     path('coach-portal/', include('apps.coach_portal.urls')),
