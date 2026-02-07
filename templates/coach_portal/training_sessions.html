@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Training Sessions - Coach Portal{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Training Sessions</h1>
+        <div>
+            <a href="{% url 'coach_portal:create_training_session' %}" class="btn btn-primary me-2">
+                <i class="bi bi-plus-circle me-1"></i> Add Session
+            </a>
+            <a href="{% url 'coach_portal:dashboard' %}" class="btn btn-outline-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <form method="get" class="d-flex gap-2 align-items-center">
+                <label for="filter" class="form-label mb-0">Filter:</label>
+                <select name="filter" id="filter" class="form-select w-auto" onchange="this.form.submit()">
+                    <option value="upcoming" {% if selected_filter == 'upcoming' %}selected{% endif %}>Upcoming</option>
+                    <option value="past" {% if selected_filter == 'past' %}selected{% endif %}>Past</option>
+                    <option value="all" {% if selected_filter == 'all' %}selected{% endif %}>All</option>
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header bg-success text-white">
+            <h6 class="m-0">Sessions List</h6>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Title</th>
+                        <th>Date & Time</th>
+                        <th>Center</th>
+                        <th>Status</th>
+                        <th>Attendees</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session in sessions %}
+                    <tr>
+                        <td>
+                            <strong>{{ session.title }}</strong>
+                            {% if session.description %}
+                            <br><small class="text-muted">{{ session.description|truncatechars:50 }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ session.start_time|date:"M d, Y h:i A" }} <br>
+                            <small class="text-muted">to {{ session.end_time|date:"h:i A" }}</small>
+                        </td>
+                        <td>{{ session.center.name }}</td>
+                        <td>
+                            <span
+                                class="badge bg-{% if session.status == 'scheduled' %}primary{% elif session.status == 'completed' %}success{% elif session.status == 'cancelled' %}danger{% else %}secondary{% endif %}">
+                                {{ session.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ session.attendance|default:"-" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4">No sessions found for this filter.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

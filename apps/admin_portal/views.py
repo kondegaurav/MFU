@@ -40,7 +40,7 @@ def admin_dashboard(request):
     # Recent Registrations
     recent_registrations = EventRegistration.objects.select_related(
         'event', 'participant'
-    ).order_by('-registration_date')[:5]
+    ).order_by('-registered_at')[:5]
     
     # Recent Financial Transactions
     recent_transactions = FinancialTransaction.objects.order_by('-transaction_date')[:5]

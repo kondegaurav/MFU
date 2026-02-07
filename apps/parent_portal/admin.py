@@ -5,7 +5,7 @@ from .models import Parent, ParentChildRelation
 class ParentChildRelationInline(admin.TabularInline):
     model = ParentChildRelation
     extra = 0
-    fields = ('child', 'relationship_type', 'can_view_scores', 'can_view_rankings', 'can_view_certificates')
+    fields = ('child', 'relationship', 'can_view_scores', 'can_view_rankings', 'can_view_certificates')
 
 
 @admin.register(Parent)
@@ -40,21 +40,15 @@ class ParentAdmin(admin.ModelAdmin):
 
 @admin.register(ParentChildRelation)
 class ParentChildRelationAdmin(admin.ModelAdmin):
-    list_display = ('parent_name', 'child_name')
-    list_filter = ('can_view_scores', 'can_view_rankings')
+    list_display = ('parent_name', 'child_name', 'relationship')
+    list_filter = ('can_view_scores', 'can_view_rankings', 'relationship')
     search_fields = ('parent__user__first_name', 'child__first_name')
     fieldsets = (
         ('Relationship', {
-            'fields': ('parent', 'child', 'relationship_type')
+            'fields': ('parent', 'child', 'relationship')
         }),
-        ('Permissions - View Scores & Results', {
-            'fields': ('can_view_scores', 'can_view_competition_results', 'can_view_events')
-        }),
-        ('Permissions - Rankings & Certifications', {
-            'fields': ('can_view_rankings', 'can_view_certificates', 'can_view_training_schedule')
-        }),
-        ('Permissions - Financial & Medical', {
-            'fields': ('can_view_fees', 'can_view_medical_info', 'can_view_contact_info')
+        ('Permissions', {
+            'fields': ('can_view_scores', 'can_view_rankings', 'can_view_certificates', 'can_view_attendance', 'can_view_fees')
         }),
     )
     

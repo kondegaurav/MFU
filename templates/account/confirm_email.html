@@ -5,21 +5,22 @@
 
 {% block content %}
 <div class="container">
-  <div class="row justify-content-center align-items-center min-vh-100">
-    <div class="col-md-8">
-      <div class="card shadow">
-        <div class="card-body p-5 text-center">
-          <h2 class="fw-bold text-primary mb-3">Email Confirmation</h2>
-          {% if email_verified %}
-            <p class="lead">Your email has been confirmed. You can now sign in.</p>
-            <a href="{% url 'account_login' %}" class="btn btn-primary mt-3">Sign In</a>
-          {% else %}
-            <p class="lead">Email confirmation failed or link expired. Please request a new confirmation email from your account settings.</p>
-            <a href="{% url 'account_login' %}" class="btn btn-outline-primary mt-3">Back to Sign In</a>
-          {% endif %}
+    <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body p-5 text-center">
+                    <h2 class="fw-bold text-primary mb-3">Email Confirmation</h2>
+                    {% if email_verified %}
+                    <p class="lead">Your email has been confirmed. You can now sign in.</p>
+                    <a href="{% url 'account_login' %}" class="btn btn-primary mt-3">Sign In</a>
+                    {% else %}
+                    <p class="lead">Email confirmation failed or link expired. Please request a new confirmation email
+                        from your account settings.</p>
+                    <a href="{% url 'account_login' %}" class="btn btn-outline-primary mt-3">Back to Sign In</a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 {% endblock %}

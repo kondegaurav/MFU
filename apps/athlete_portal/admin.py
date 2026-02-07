@@ -18,8 +18,8 @@ class AthleteRankingInline(admin.TabularInline):
 class EvaluationCertificateInline(admin.TabularInline):
     model = EvaluationCertificate
     extra = 0
-    fields = ('title', 'issued_by', 'is_viewable_by_parents', 'valid_from', 'valid_until')
-    readonly_fields = ('issued_date',)
+    fields = ('title', 'issued_by', 'is_viewable_by_parents', 'valid_until')
+    readonly_fields = ('issued_date', 'valid_from')
 
 
 @admin.register(AthletePerson)
@@ -97,7 +97,7 @@ class EvaluationCertificateAdmin(admin.ModelAdmin):
     list_display = ('title', 'athlete', 'issued_by', 'issued_date', 'is_viewable_by_parents')
     list_filter = ('is_viewable_by_parents', 'issued_date', 'valid_until', 'event')
     search_fields = ('title', 'athlete__first_name', 'issued_by__first_name')
-    readonly_fields = ('issued_date', 'created_at')
+    readonly_fields = ('issued_date', 'valid_from', 'created_at')
     fieldsets = (
         ('Certificate Information', {
             'fields': ('athlete', 'title', 'description', 'certificate_number', 'event')

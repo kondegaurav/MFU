@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ team.name }} - Coach Portal{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-0">{{ team.name }}</h1>
+            <p class="text-muted">{{ team.category }} | {{ team.get_status_display }}</p>
+        </div>
+        <a href="{% url 'coach_portal:teams' %}" class="btn btn-outline-secondary">Back to Teams</a>
+    </div>
+
+    <!-- Team Info -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h6 class="m-0">Team Information</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Coach:</strong> {{ team.coach.user.get_full_name }}</p>
+                    <p><strong>Created:</strong> {{ team.created_at|date:"M d, Y" }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Description:</strong></p>
+                    <p class="text-muted">{{ team.description|default:"No description provided." }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Members -->
+    <div class="card shadow">
+        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+            <h6 class="m-0">Team Roster ({{ members.count }})</h6>
+            <!-- Add Member button could go here IF permission implemented -->
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Athlete Name</th>
+                        <th>Role</th>
+                        <th>Jersey #</th>
+                        <th>Joined Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in members %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="message-avatar rounded-circle bg-light text-primary d-flex align-items-center justify-content-center me-2"
+                                    style="width: 40px; height: 40px; font-weight: bold;">
+                                    {{ member.athlete.user.first_name|first }}{{ member.athlete.user.last_name|first }}
+                                </div>
+                                <div>
+                                    <div class="fw-bold">{{ member.athlete.get_full_name }}</div>
+                                    <small class="text-muted">{{ member.athlete.user.email }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-info text-dark">{{ member.get_role_display }}</span>
+                        </td>
+                        <td>{{ member.jersey_number|default:"-" }}</td>
+                        <td>{{ member.joined_at|date:"M d, Y" }}</td>
+                        <td>
+                            <a href="#" class="btn btn-sm btn-outline-primary">View Profile</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4">No athletes in this team yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

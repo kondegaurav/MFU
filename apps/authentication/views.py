@@ -46,15 +46,17 @@ def custom_login(request):
         if user is not None:
             # Check if user is active
             if not user.is_active:
-                messages.error(request, 'Your account is inactive. Please contact support.')
+                messages.warning(
+                    request,
+                    'Your account is not yet activated. Please reset your password via the "Forgot Password" link to activate it.'
+                )
                 return render(request, 'authentication/login.html')
 
             # Check if email is confirmed
             if not user.email_confirmed:
                 messages.warning(
                     request,
-                    'Please confirm your email address before logging in. '
-                    'Check your inbox for the confirmation link.'
+                    'Please confirm your email address before logging in. Check your inbox for the confirmation link or use "Forgot Password" to reset it.'
                 )
                 return render(request, 'authentication/login.html')
 
@@ -262,9 +264,15 @@ def reset_password(request, uidb64, token):
 
         # Set new password
         user.set_password(password)
+        # Activate account and confirm email if not already done
+        user.is_active = True
+        user.email_confirmed = True
         user.save()
 
-        messages.success(request, 'Your password has been reset successfully. You can now log in.')
+        # Mark email as verified in EmailAddress (allauth)
+        EmailAddress.objects.filter(user=user, primary=True).update(verified=True)
+
+        messages.success(request, 'Your password has been reset successfully. Your email has been confirmed. You can now log in.')
         return redirect('authentication:login')
 
     return render(request, 'authentication/reset_password.html', {'uidb64': uidb64, 'token': token})

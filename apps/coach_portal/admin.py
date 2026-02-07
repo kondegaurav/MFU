@@ -5,7 +5,7 @@ from .models import CoachProfile, TrainingSession, CompetitionTeam, TeamMember
 class TrainingSessionInline(admin.TabularInline):
     model = TrainingSession
     extra = 0
-    fields = ('title', 'start_time', 'status')
+    fields = ('title', 'description', 'center', 'start_time', 'end_time', 'status')
     readonly_fields = ()
 
 

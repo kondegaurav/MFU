@@ -544,3 +544,11 @@ This project is part of the MFU Web Portal initiative.
 
 **Last Updated:** February 6, 2026  
 **Version:** 1.0.0
+
+
+## Superadmin
+
+http://127.0.0.1:8001/admin
+
+Username: admin@mfu.com
+Password: admin
