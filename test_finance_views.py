@@ -19,10 +19,14 @@ try:
         defaults={'first_name': 'Test', 'last_name': 'Finance', 'is_active': True}
     )
 
-    role_obj, _ = Role.objects.get_or_create(
+    role_obj, created = Role.objects.get_or_create(
         code='finance_inventory',
-        defaults={'name': 'Finance & Inventory Manager', 'dashboard_url': 'finance:dashboard'}
+        defaults={'name': 'Finance & Inventory Manager', 'dashboard_url': 'finance_portal:dashboard'}
     )
+    if not created and role_obj.dashboard_url != 'finance_portal:dashboard':
+        role_obj.dashboard_url = 'finance_portal:dashboard'
+        role_obj.save()
+        print(f"✓ Updated role dashboard_url to: {role_obj.dashboard_url}")
 
     user_role, _ = UserRole.objects.get_or_create(
         user=test_user,
