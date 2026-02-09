@@ -14,12 +14,12 @@
                         <label for="status" class="form-label">Filter by Status</label>
                         <select name="status" id="status" class="form-select">
                             <option value="">All Statuses</option>
-                            <option value="pending" {% if selected_status=='pending' %}selected{% endif %}>Pending
+                            <option value="pending" {% if selected_status == 'pending' %}selected{% endif %}>Pending
                             </option>
-                            <option value="completed" {% if selected_status=='completed' %}selected{% endif %}>Completed
+                            <option value="completed" {% if selected_status == 'completed' %}selected{% endif %}>Completed
                             </option>
-                            <option value="failed" {% if selected_status=='failed' %}selected{% endif %}>Failed</option>
-                            <option value="refunded" {% if selected_status=='refunded' %}selected{% endif %}>Refunded
+                            <option value="failed" {% if selected_status == 'failed' %}selected{% endif %}>Failed</option>
+                            <option value="refunded" {% if selected_status == 'refunded' %}selected{% endif %}>Refunded
                             </option>
                         </select>
                     </div>
@@ -27,18 +27,18 @@
                         <label for="transaction_type" class="form-label">Transaction Type</label>
                         <select name="transaction_type" id="transaction_type" class="form-select">
                             <option value="">All Types</option>
-                            <option value="credit" {% if selected_type=='credit' %}selected{% endif %}>Credit</option>
-                            <option value="debit" {% if selected_type=='debit' %}selected{% endif %}>Debit</option>
+                            <option value="credit" {% if selected_type == 'credit' %}selected{% endif %}>Credit</option>
+                            <option value="debit" {% if selected_type == 'debit' %}selected{% endif %}>Debit</option>
                         </select>
                     </div>
                     <div class="col-md-4">
                         <label for="payment_method" class="form-label">Payment Method</label>
                         <select name="payment_method" id="payment_method" class="form-select">
                             <option value="">All Methods</option>
-                            <option value="card" {% if selected_method=='card' %}selected{% endif %}>Card</option>
-                            <option value="bank" {% if selected_method=='bank' %}selected{% endif %}>Bank Transfer
+                            <option value="card" {% if selected_method == 'card' %}selected{% endif %}>Card</option>
+                            <option value="bank" {% if selected_method == 'bank' %}selected{% endif %}>Bank Transfer
                             </option>
-                            <option value="cash" {% if selected_method=='cash' %}selected{% endif %}>Cash</option>
+                            <option value="cash" {% if selected_method == 'cash' %}selected{% endif %}>Cash</option>
                         </select>
                     </div>
                     <div class="col-md-4 d-flex align-items-end">
@@ -48,14 +48,14 @@
             </div>
         </div>
         Income</option>
-        <option value="equipment_purchase" {% if selected_type=="equipment_purchase" %}selected{% endif %}>Equipment
+        <option value="equipment_purchase" {% if selected_type == "equipment_purchase" %}selected{% endif %}>Equipment
             Purchase</option>
-        <option value="maintenance" {% if selected_type=="maintenance" %}selected{% endif %}>Maintenance
+        <option value="maintenance" {% if selected_type == "maintenance" %}selected{% endif %}>Maintenance
         </option>
-        <option value="staff_salary" {% if selected_type=="staff_salary" %}selected{% endif %}>Staff
+        <option value="staff_salary" {% if selected_type == "staff_salary" %}selected{% endif %}>Staff
             Salary</option>
-        <option value="utility" {% if selected_type=="utility" %}selected{% endif %}>Utility</option>
-        <option value="other_expense" {% if selected_type=="other_expense" %}selected{% endif %}>Other
+        <option value="utility" {% if selected_type == "utility" %}selected{% endif %}>Utility</option>
+        <option value="other_expense" {% if selected_type == "other_expense" %}selected{% endif %}>Other
             Expense</option>
         </select>
     </div>
@@ -63,15 +63,15 @@
         <label for="method" class="form-label">Filter by Payment Method</label>
         <select name="method" id="method" class="form-select">
             <option value="">All Methods</option>
-            <option value="cash" {% if selected_method=="cash" %}selected{% endif %}>Cash</option>
-            <option value="check" {% if selected_method=="check" %}selected{% endif %}>Check</option>
-            <option value="card" {% if selected_method=="card" %}selected{% endif %}>Credit/Debit Card
+            <option value="cash" {% if selected_method == "cash" %}selected{% endif %}>Cash</option>
+            <option value="check" {% if selected_method == "check" %}selected{% endif %}>Check</option>
+            <option value="card" {% if selected_method == "card" %}selected{% endif %}>Credit/Debit Card
             </option>
-            <option value="bank_transfer" {% if selected_method=="bank_transfer" %}selected{% endif %}>Bank
+            <option value="bank_transfer" {% if selected_method == "bank_transfer" %}selected{% endif %}>Bank
                 Transfer</option>
-            <option value="online" {% if selected_method=="online" %}selected{% endif %}>Online Payment
+            <option value="online" {% if selected_method == "online" %}selected{% endif %}>Online Payment
             </option>
-            <option value="other" {% if selected_method=="other" %}selected{% endif %}>Other</option>
+            <option value="other" {% if selected_method == "other" %}selected{% endif %}>Other</option>
         </select>
     </div>
     <div class="col-md-3 d-flex align-items-end">

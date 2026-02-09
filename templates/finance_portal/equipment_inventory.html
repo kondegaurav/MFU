@@ -52,25 +52,25 @@
                     <label for="status" class="form-label">Filter by Status</label>
                     <select name="status" id="status" class="form-select">
                         <option value="">All Statuses</option>
-                        <option value="available" {% if selected_status=='available' %}selected{% endif %}>Available
+                        <option value="available" {% if selected_status == 'available' %}selected{% endif %}>Available
                         </option>
-                        <option value="in_use" {% if selected_status=='in_use' %}selected{% endif %}>In Use</option>
-                        <option value="maintenance" {% if selected_status=='maintenance' %}selected{% endif %}>
+                        <option value="in_use" {% if selected_status == 'in_use' %}selected{% endif %}>In Use</option>
+                        <option value="maintenance" {% if selected_status == 'maintenance' %}selected{% endif %}>
                             Maintenance</option>
-                        <option value="retired" {% if selected_status=='retired' %}selected{% endif %}>Retired</option>
+                        <option value="retired" {% if selected_status == 'retired' %}selected{% endif %}>Retired</option>
                     </select>
                 </div>
                 <div class="col-md-4">
                     <label for="condition" class="form-label">Filter by Condition</label>
                     <select name="condition" id="condition" class="form-select">
                         <option value="">All Conditions</option>
-                        <option value="excellent" {% if selected_condition=='excellent' %}selected{% endif %}>Excellent
+                        <option value="excellent" {% if selected_condition == 'excellent' %}selected{% endif %}>Excellent
                         </option>
-                        <option value="good" {% if selected_condition=='good' %}selected{% endif %}>Good</option>
-                        <option value="fair" {% if selected_condition=='fair' %}selected{% endif %}>Fair</option>
-                        <option value="damaged" {% if selected_condition=='damaged' %}selected{% endif %}>Damaged
+                        <option value="good" {% if selected_condition == 'good' %}selected{% endif %}>Good</option>
+                        <option value="fair" {% if selected_condition == 'fair' %}selected{% endif %}>Fair</option>
+                        <option value="damaged" {% if selected_condition == 'damaged' %}selected{% endif %}>Damaged
                         </option>
-                        <option value="unusable" {% if selected_condition=='unusable' %}selected{% endif %}>Unusable
+                        <option value="unusable" {% if selected_condition == 'unusable' %}selected{% endif %}>Unusable
                         </option>
                     </select>
                 </div>
