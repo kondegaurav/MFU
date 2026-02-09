@@ -36,14 +36,14 @@
                     <label for="status" class="form-label">Filter by Status</label>
                     <select name="status" id="status" class="form-select">
                         <option value="">All Statuses</option>
-                        <option value="pending" {% if selected_status=='pending' %}selected{% endif %}>Pending</option>
-                        <option value="approved" {% if selected_status=='approved' %}selected{% endif %}>Approved
+                        <option value="pending" {% if selected_status == 'pending' %}selected{% endif %}>Pending</option>
+                        <option value="approved" {% if selected_status == 'approved' %}selected{% endif %}>Approved
                         </option>
-                        <option value="rejected" {% if selected_status=='rejected' %}selected{% endif %}>Rejected
+                        <option value="rejected" {% if selected_status == 'rejected' %}selected{% endif %}>Rejected
                         </option>
-                        <option value="in_progress" {% if selected_status=='in_progress' %}selected{% endif %}>In
+                        <option value="in_progress" {% if selected_status == 'in_progress' %}selected{% endif %}>In
                             Progress</option>
-                        <option value="completed" {% if selected_status=='completed' %}selected{% endif %}>Completed
+                        <option value="completed" {% if selected_status == 'completed' %}selected{% endif %}>Completed
                         </option>
                     </select>
                 </div>
@@ -51,11 +51,11 @@
                     <label for="request_type" class="form-label">Request Type</label>
                     <select name="request_type" id="request_type" class="form-select">
                         <option value="">All Types</option>
-                        <option value="use" {% if selected_type=='use' %}selected{% endif %}>Use</option>
-                        <option value="maintenance" {% if selected_type=='maintenance' %}selected{% endif %}>Maintenance
+                        <option value="use" {% if selected_type == 'use' %}selected{% endif %}>Use</option>
+                        <option value="maintenance" {% if selected_type == 'maintenance' %}selected{% endif %}>Maintenance
                         </option>
-                        <option value="repair" {% if selected_type=='repair' %}selected{% endif %}>Repair</option>
-                        <option value="return" {% if selected_type=='return' %}selected{% endif %}>Return</option>
+                        <option value="repair" {% if selected_type == 'repair' %}selected{% endif %}>Repair</option>
+                        <option value="return" {% if selected_type == 'return' %}selected{% endif %}>Return</option>
                     </select>
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
