@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}My Teams - Athlete Portal{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">My Teams</h1>
+
+    {% if team_memberships %}
+    <div class="card shadow">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Team Name</th>
+                        <th>Category</th>
+                        <th>Role</th>
+                        <th>Jersey #</th>
+                        <th>Coach</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for membership in team_memberships %}
+                    <tr>
+                        <td>{{ membership.team.name }}</td>
+                        <td>{{ membership.team.category }}</td>
+                        <td><span class="badge bg-info text-dark">{{ membership.get_role_display }}</span></td>
+                        <td>{{ membership.jersey_number|default:"-" }}</td>
+                        <td>{{ membership.team.coach.user.get_full_name|default:"-" }}</td>
+                        <td>{{ membership.joined_at|date:"M d, Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <p>You are not currently a member of any teams.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

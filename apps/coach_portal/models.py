@@ -52,6 +52,11 @@ class CoachProfile(models.Model):
         verbose_name = 'Coach Profile'
         verbose_name_plural = 'Coach Profiles'
     
+    @property
+    def has_head_coach_privileges(self):
+        """Check if coach has head coach privileges via DB field OR Role Tag."""
+        return self.is_head_coach or self.user.has_tag('head_coach')
+
     def __str__(self):
         return f"Coach: {self.user.get_full_name()}"
 

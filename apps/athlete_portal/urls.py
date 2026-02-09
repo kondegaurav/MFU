@@ -6,6 +6,7 @@ app_name = 'athlete_portal'
 
 urlpatterns = [
     path('dashboard/', views.athlete_dashboard, name='dashboard'),
+    path('<int:athlete_id>/', views.athlete_detail, name='detail'),
     path('rankings/', views.athlete_rankings, name='rankings'),
     path('scores/', views.athlete_scores, name='scores'),
     path('certificates/', views.athlete_certificates, name='certificates'),

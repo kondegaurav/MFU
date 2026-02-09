@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ athlete.get_full_name }} - Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-0">{{ athlete.get_full_name }}</h1>
+            <p class="text-muted">Age {{ athlete.age }} | Member since {{ athlete.registration_date|date:"M d, Y" }}</p>
+        </div>
+        <a href="javascript:history.back()" class="btn btn-outline-secondary">Back</a>
+    </div>
+
+    <div class="row">
+        <!-- Personal Information -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="m-0">Personal Information</h6>
+                </div>
+                <div class="card-body">
+                    <p><strong>Full Name:</strong> {{ athlete.get_full_name }}</p>
+                    <p><strong>Date of Birth:</strong> {{ athlete.date_of_birth|date:"M d, Y" }}</p>
+                    <p><strong>Age:</strong> {{ athlete.age }} years old</p>
+                    <p><strong>Gender:</strong> {{ athlete.get_gender_display }}</p>
+                    <p><strong>Email:</strong> {{ athlete.email|default:"Not provided" }}</p>
+                    <p><strong>Phone:</strong> {{ athlete.phone|default:"Not provided" }}</p>
+                    {% if athlete.center %}
+                    <p><strong>Center:</strong> {{ athlete.center.name }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Medical Information -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h6 class="m-0">Medical Information</h6>
+                </div>
+                <div class="card-body">
+                    <p><strong>Blood Type:</strong> {{ athlete.blood_type|default:"Not provided" }}</p>
+                    {% if athlete.allergies %}
+                    <p><strong>Allergies:</strong> {{ athlete.allergies }}</p>
+                    {% else %}
+                    <p><strong>Allergies:</strong> <span class="text-muted">None recorded</span></p>
+                    {% endif %}
+                    {% if athlete.medical_conditions %}
+                    <p><strong>Medical Conditions:</strong> {{ athlete.medical_conditions }}</p>
+                    {% else %}
+                    <p><strong>Medical Conditions:</strong> <span class="text-muted">None recorded</span></p>
+                    {% endif %}
+                    {% if athlete.emergency_contact_name %}
+                    <p><strong>Emergency Contact:</strong> {{ athlete.emergency_contact_name }}</p>
+                    <p><strong>Contact Phone:</strong> {{ athlete.emergency_contact_phone }}</p>
+                    {% else %}
+                    <p><strong>Emergency Contact:</strong> <span class="text-muted">Not provided</span></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Memberships -->
+    {% if team_memberships %}
+    <div class="card shadow mb-4">
+        <div class="card-header bg-success text-white">
+            <h6 class="m-0">Team Memberships ({{ team_memberships.count }})</h6>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Team Name</th>
+                        <th>Category</th>
+                        <th>Role</th>
+                        <th>Jersey #</th>
+                        <th>Joined Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for membership in team_memberships %}
+                    <tr>
+                        <td>{{ membership.team.name }}</td>
+                        <td>{{ membership.team.category }}</td>
+                        <td><span class="badge bg-info text-dark">{{ membership.get_role_display }}</span></td>
+                        <td>{{ membership.jersey_number|default:"-" }}</td>
+                        <td>{{ membership.joined_at|date:"M d, Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Rankings -->
+    {% if rankings %}
+    <div class="card shadow mb-4">
+        <div class="card-header bg-warning text-dark">
+            <h6 class="m-0">Rankings</h6>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Category</th>
+                        <th>Total Score</th>
+                        <th>Rank</th>
+                        <th>Last Updated</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ranking in rankings %}
+                    <tr>
+                        <td>{{ ranking.category }}</td>
+                        <td>{{ ranking.total_score }}</td>
+                        <td>{{ ranking.rank|default:"-" }}</td>
+                        <td>{{ ranking.updated_at|date:"M d, Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Recent Scores -->
+    {% if recent_scores %}
+    <div class="card shadow mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h6 class="m-0">Recent Scores</h6>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Event</th>
+                        <th>Score</th>
+                        <th>Performance</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for score in recent_scores %}
+                    <tr>
+                        <td>{{ score.event.name }}</td>
+                        <td>{{ score.score }}</td>
+                        <td>{{ score.performance|default:"-" }}</td>
+                        <td>{{ score.recorded_at|date:"M d, Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Certificates -->
+    {% if certificates %}
+    <div class="card shadow mb-4">
+        <div class="card-header bg-success text-white">
+            <h6 class="m-0">Evaluation Certificates</h6>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Certificate</th>
+                        <th>Issued By</th>
+                        <th>Issued Date</th>
+                        <th>Valid Until</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cert in certificates %}
+                    <tr>
+                        <td>{{ cert.certificate_type }}</td>
+                        <td>{{ cert.issued_by|default:"-" }}</td>
+                        <td>{{ cert.issued_date|date:"M d, Y" }}</td>
+                        <td>{{ cert.valid_until|date:"M d, Y"|default:"-" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

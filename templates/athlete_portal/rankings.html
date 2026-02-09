@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}My Rankings - Athlete Portal{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">My Rankings</h1>
+
+    {% if rankings %}
+    <div class="card shadow">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Category</th>
+                        <th>Total Score</th>
+                        <th>Rank</th>
+                        <th>Events Participated</th>
+                        <th>Last Updated</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ranking in rankings %}
+                    <tr>
+                        <td>{{ ranking.category }}</td>
+                        <td>{{ ranking.total_score }}</td>
+                        <td>#{{ ranking.rank|default:"-" }}</td>
+                        <td>{{ ranking.events_participated }}</td>
+                        <td>{{ ranking.last_updated|date:"M d, Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <p>You don't have any rankings yet. Participate in events to get ranked!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

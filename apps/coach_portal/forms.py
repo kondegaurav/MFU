@@ -1,5 +1,5 @@
 from django import forms
-from .models import TrainingSession
+from .models import TrainingSession, CompetitionTeam
 from django.utils import timezone
 
 class TrainingSessionForm(forms.ModelForm):
@@ -26,3 +26,14 @@ class TrainingSessionForm(forms.ModelForm):
                 raise forms.ValidationError("End time must be after start time.")
         
         return cleaned_data
+
+class CompetitionTeamForm(forms.ModelForm):
+    class Meta:
+        model = CompetitionTeam
+        fields = ['name', 'description', 'category', 'status']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
+            'category': forms.TextInput(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-select'}),
+        }

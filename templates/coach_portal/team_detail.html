@@ -35,7 +35,11 @@
     <div class="card shadow">
         <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
             <h6 class="m-0">Team Roster ({{ members.count }})</h6>
-            <!-- Add Member button could go here IF permission implemented -->
+            {% if coach.has_head_coach_privileges %}
+            <a href="{% url 'coach_portal:add_team_member' team.id %}" class="btn btn-sm btn-light text-success">
+                Add Member
+            </a>
+            {% endif %}
         </div>
         <div class="table-responsive">
             <table class="table table-hover mb-0">
@@ -69,7 +73,15 @@
                         <td>{{ member.jersey_number|default:"-" }}</td>
                         <td>{{ member.joined_at|date:"M d, Y" }}</td>
                         <td>
-                            <a href="#" class="btn btn-sm btn-outline-primary">View Profile</a>
+                            <a href="{% url 'athlete_portal:detail' member.athlete.id %}"
+                                class="btn btn-sm btn-outline-primary">View Profile</a>
+                            {% if coach.has_head_coach_privileges %}
+                            <a href="{% url 'coach_portal:remove_team_member' team.id member.id %}"
+                                class="btn btn-sm btn-outline-danger"
+                                onclick="return confirm('Are you sure you want to remove this athlete?');">
+                                Remove
+                            </a>
+                            {% endif %}
                         </td>
                     </tr>
                     {% empty %}

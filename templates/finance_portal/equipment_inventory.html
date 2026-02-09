@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}Equipment Inventory - Finance Portal{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Equipment Inventory</h1>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Total Equipment</h5>
+                    <h2 class="card-text text-primary">{{ stats.total_equipment }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Available</h5>
+                    <h2 class="card-text text-success">{{ stats.available }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">In Use</h5>
+                    <h2 class="card-text text-info">{{ stats.in_use }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Maintenance</h5>
+                    <h2 class="card-text text-warning">{{ stats.maintenance }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="status" class="form-label">Filter by Status</label>
+                    <select name="status" id="status" class="form-select">
+                        <option value="">All Statuses</option>
+                        <option value="available" {% if selected_status=='available' %}selected{% endif %}>Available
+                        </option>
+                        <option value="in_use" {% if selected_status=='in_use' %}selected{% endif %}>In Use</option>
+                        <option value="maintenance" {% if selected_status=='maintenance' %}selected{% endif %}>
+                            Maintenance</option>
+                        <option value="retired" {% if selected_status=='retired' %}selected{% endif %}>Retired</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="condition" class="form-label">Filter by Condition</label>
+                    <select name="condition" id="condition" class="form-select">
+                        <option value="">All Conditions</option>
+                        <option value="excellent" {% if selected_condition=='excellent' %}selected{% endif %}>Excellent
+                        </option>
+                        <option value="good" {% if selected_condition=='good' %}selected{% endif %}>Good</option>
+                        <option value="fair" {% if selected_condition=='fair' %}selected{% endif %}>Fair</option>
+                        <option value="damaged" {% if selected_condition=='damaged' %}selected{% endif %}>Damaged
+                        </option>
+                        <option value="unusable" {% if selected_condition=='unusable' %}selected{% endif %}>Unusable
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Equipment List -->
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Equipment Code</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Quantity</th>
+                        <th>Condition</th>
+                        <th>Status</th>
+                        <th>Purchase Date</th>
+                        <th>Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for equipment in equipment_list %}
+                    <tr>
+                        <td><strong>{{ equipment.equipment_code }}</strong></td>
+                        <td>{{ equipment.name }}</td>
+                        <td>{{ equipment.equipment_type }}</td>
+                        <td>{{ equipment.quantity }}</td>
+                        <td>
+                            <span class="badge 
+                                {% if equipment.condition == 'excellent' %}bg-success
+                                {% elif equipment.condition == 'good' %}bg-info
+                                {% elif equipment.condition == 'fair' %}bg-warning
+                                {% elif equipment.condition == 'damaged' %}bg-danger
+                                {% elif equipment.condition == 'unusable' %}bg-dark
+                                {% endif %}">
+                                {{ equipment.get_condition_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge 
+                                {% if equipment.status == 'available' %}bg-success
+                                {% elif equipment.status == 'in_use' %}bg-info
+                                {% elif equipment.status == 'maintenance' %}bg-warning text-dark
+                                {% elif equipment.status == 'retired' %}bg-secondary
+                                {% endif %}">
+                                {{ equipment.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ equipment.purchase_date|date:"M d, Y" }}</td>
+                        <td>${{ equipment.purchase_cost }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-3">No equipment found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

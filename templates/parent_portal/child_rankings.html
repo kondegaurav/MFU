@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ child.get_full_name }} Rankings - Parent Portal{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-0">{{ child.get_full_name }}'s Rankings</h1>
+            <p class="text-muted">Age {{ child.age }} | Member since {{ child.registration_date|date:"M d, Y" }}</p>
+        </div>
+        <a href="{% url 'parent_portal:child_details' child.id %}" class="btn btn-outline-secondary">Back to Profile</a>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    {% if rankings %}
+    <div class="card shadow">
+        <div class="card-header bg-warning text-dark">
+            <h6 class="m-0">Rankings</h6>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Category</th>
+                        <th>Total Score</th>
+                        <th>Rank</th>
+                        <th>Events Participated</th>
+                        <th>Last Updated</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ranking in rankings %}
+                    <tr>
+                        <td>{{ ranking.category }}</td>
+                        <td>{{ ranking.total_score }}</td>
+                        <td>#{{ ranking.rank|default:"-" }}</td>
+                        <td>{{ ranking.events_participated }}</td>
+                        <td>{{ ranking.last_updated|date:"M d, Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <p>No rankings available yet.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

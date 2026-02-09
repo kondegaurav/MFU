@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Equipment Requests - Finance Portal{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Equipment Requests</h1>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Total Requests</h5>
+                    <h2 class="card-text text-primary">{{ total_requests }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Pending</h5>
+                    <h2 class="card-text text-warning">{{ pending_requests }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="status" class="form-label">Filter by Status</label>
+                    <select name="status" id="status" class="form-select">
+                        <option value="">All Statuses</option>
+                        <option value="pending" {% if selected_status=='pending' %}selected{% endif %}>Pending</option>
+                        <option value="approved" {% if selected_status=='approved' %}selected{% endif %}>Approved
+                        </option>
+                        <option value="rejected" {% if selected_status=='rejected' %}selected{% endif %}>Rejected
+                        </option>
+                        <option value="in_progress" {% if selected_status=='in_progress' %}selected{% endif %}>In
+                            Progress</option>
+                        <option value="completed" {% if selected_status=='completed' %}selected{% endif %}>Completed
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="request_type" class="form-label">Request Type</label>
+                    <select name="request_type" id="request_type" class="form-select">
+                        <option value="">All Types</option>
+                        <option value="use" {% if selected_type=='use' %}selected{% endif %}>Use</option>
+                        <option value="maintenance" {% if selected_type=='maintenance' %}selected{% endif %}>Maintenance
+                        </option>
+                        <option value="repair" {% if selected_type=='repair' %}selected{% endif %}>Repair</option>
+                        <option value="return" {% if selected_type=='return' %}selected{% endif %}>Return</option>
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <tbody>
+        {% for request in requests_list %}
+        <tr>
+            <td>{{ request.equipment.name }}</td>
+            <td>{{ request.requested_by.get_full_name }}</td>
+            <td>
+                <span class="badge bg-info text-dark">
+                    {{ request.get_request_type_display }}
+                </span>
+            </td>
+            <td>{{ request.start_date|date:"M d, Y H:i" }}</td>
+            <td>{{ request.end_date|date:"M d, Y H:i" }}</td>
+            <td>
+                <span class="badge
+                                {% if request.status == 'pending' %}bg-warning text-dark
+                                {% elif request.status == 'approved' %}bg-success
+                                {% elif request.status == 'rejected' %}bg-danger
+                                {% elif request.status == 'in_progress' %}bg-info
+                                {% elif request.status == 'completed' %}bg-secondary
+                                {% endif %}">
+                    {{ request.get_status_display }}
+                </span>
+            </td>
+            <td>{{ request.purpose|truncatewords:10 }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7" class="text-center text-muted py-3">No requests found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+</div>
+</div>
+</div>
+{% endblock %}

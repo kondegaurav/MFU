@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}All Scores - Athlete Portal{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">All Scores</h1>
+
+    {% if scores %}
+    <div class="card shadow">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Event</th>
+                        <th>Score</th>
+                        <th>Score Type</th>
+                        <th>Rank/Position</th>
+                        <th>Notes</th>
+                        <th>Date Recorded</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for score in scores %}
+                    <tr>
+                        <td>{{ score.event.name }}</td>
+                        <td>{{ score.score }}</td>
+                        <td>{{ score.get_score_type_display }}</td>
+                        <td>{{ score.rank|default:"-" }}</td>
+                        <td>{{ score.notes|truncatewords:5 }}</td>
+                        <td>{{ score.recorded_at|date:"M d, Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <p>You don't have any scores recorded yet.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

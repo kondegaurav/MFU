@@ -22,7 +22,8 @@ def coach_dashboard(request):
         return render(request, 'coach_portal/dashboard.html', context)
     
     # Get coach's teams
-    if coach.is_head_coach and coach.center:
+    # Get coach's teams
+    if coach.has_head_coach_privileges and coach.center:
         teams = CompetitionTeam.objects.filter(coach__center=coach.center)
     else:
         teams = CompetitionTeam.objects.filter(coach=coach)
@@ -74,7 +75,7 @@ def teams_dashboard(request):
     user = request.user
     coach = get_object_or_404(CoachProfile, user=user)
     
-    if coach.is_head_coach and coach.center:
+    if coach.has_head_coach_privileges and coach.center:
         teams = CompetitionTeam.objects.filter(coach__center=coach.center)
     else:
         teams = CompetitionTeam.objects.filter(coach=coach)
@@ -131,7 +132,7 @@ def athletes_dashboard(request):
     coach = get_object_or_404(CoachProfile, user=user)
     
     # Get coach's teams
-    if coach.is_head_coach and coach.center:
+    if coach.has_head_coach_privileges and coach.center:
         teams = CompetitionTeam.objects.filter(coach__center=coach.center)
     else:
         teams = CompetitionTeam.objects.filter(coach=coach)
@@ -190,7 +191,7 @@ def team_detail(request, team_id):
     coach = get_object_or_404(CoachProfile, user=user)
     
     # Get team, ensuring coach has access
-    if coach.is_head_coach and coach.center:
+    if coach.has_head_coach_privileges and coach.center:
         team = get_object_or_404(CompetitionTeam, id=team_id, coach__center=coach.center)
     else:
         team = get_object_or_404(CompetitionTeam, id=team_id, coach=coach)
@@ -207,3 +208,124 @@ def team_detail(request, team_id):
         'coach': coach,
     }
     return render(request, 'coach_portal/team_detail.html', context)
+
+
+@login_required
+@require_roles('coach')
+def create_team(request):
+    """Create a new competition team (Head Coach only)."""
+    user = request.user
+    coach = get_object_or_404(CoachProfile, user=user)
+    
+    # Check head coach status
+    if not coach.has_head_coach_privileges:
+        # Ideally handle this better, but for now redirect
+        return redirect('coach_portal:teams')
+
+    from .forms import CompetitionTeamForm
+
+    if request.method == 'POST':
+        form = CompetitionTeamForm(request.POST)
+        if form.is_valid():
+            team = form.save(commit=False)
+            team.coach = coach
+            team.save()
+            return redirect('coach_portal:teams')
+    else:
+        form = CompetitionTeamForm()
+
+    context = {
+        'form': form,
+        'coach': coach,
+        'title': 'Create Competition Team'
+    }
+    return render(request, 'coach_portal/team_form.html', context)
+
+
+@login_required
+@require_roles('coach')
+def add_team_member(request, team_id):
+    """Add an athlete to the team (Head Coach only)."""
+    user = request.user
+    coach = get_object_or_404(CoachProfile, user=user)
+    
+    if not coach.has_head_coach_privileges:
+        return redirect('coach_portal:team_detail', team_id=team_id)
+
+    # Get team, ensuring coach has access
+    if coach.center:
+        team = get_object_or_404(CompetitionTeam, id=team_id, coach__center=coach.center)
+    else:
+        team = get_object_or_404(CompetitionTeam, id=team_id, coach=coach)
+
+    # Get available athletes (in center, not currently active in team)
+    # We want athletes who are NOT currently in the team (removed_at is null)
+    current_member_ids = TeamMember.objects.filter(
+        team=team, 
+        removed_at__isnull=True
+    ).values_list('athlete_id', flat=True)
+    
+    if coach.center:
+        available_athletes = AthletePerson.objects.filter(
+            center=coach.center,
+            is_active=True
+        ).exclude(id__in=current_member_ids).order_by('last_name', 'first_name')
+    else:
+        available_athletes = []
+
+    context = {
+        'team': team,
+        'available_athletes': available_athletes,
+        'coach': coach
+    }
+
+    if request.method == 'POST':
+        athlete_id = request.POST.get('athlete')
+        if athlete_id:
+            try:
+                athlete = AthletePerson.objects.get(id=athlete_id)
+            except AthletePerson.DoesNotExist:
+                context['error'] = 'Selected athlete not found.'
+                return render(request, 'coach_portal/add_team_member.html', context)
+            
+            # Verify athlete belongs to same center
+            if coach.center and athlete.center != coach.center:
+                # Should not happen if filtered correctly, but good for security
+                context['error'] = 'Selected athlete does not belong to your center.'
+                return render(request, 'coach_portal/add_team_member.html', context)
+            
+            # Check if already a member (including removed ones?)
+            # If previously removed, we might want to un-remove them
+            existing_member = TeamMember.objects.filter(team=team, athlete=athlete).first()
+            if existing_member:
+                existing_member.removed_at = None
+                existing_member.save()
+            else:
+                TeamMember.objects.create(team=team, athlete=athlete)
+            return redirect('coach_portal:team_detail', team_id=team_id)
+        else:
+            context['error'] = 'Please select an athlete to add.'
+
+    return render(request, 'coach_portal/add_team_member.html', context)
+
+
+@login_required
+@require_roles('coach')
+def remove_team_member(request, team_id, member_id):
+    """Remove an athlete from the team (Head Coach only)."""
+    user = request.user
+    coach = get_object_or_404(CoachProfile, user=user)
+    
+    if not coach.has_head_coach_privileges:
+        return redirect('coach_portal:team_detail', team_id=team_id)
+
+    if coach.center:
+        team = get_object_or_404(CompetitionTeam, id=team_id, coach__center=coach.center)
+    else:
+        team = get_object_or_404(CompetitionTeam, id=team_id, coach=coach)
+
+    member = get_object_or_404(TeamMember, id=member_id, team=team)
+    member.removed_at = timezone.now()
+    member.save()
+    
+    return redirect('coach_portal:team_detail', team_id=team_id)

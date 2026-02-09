@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}My Certificates - Athlete Portal{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">My Certificates</h1>
+
+    {% if certificates %}
+    <div class="row">
+        {% for cert in certificates %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ cert.title }}</h5>
+                    <p class="card-text">{{ cert.description }}</p>
+
+                    <hr>
+
+                    <p class="mb-1">
+                        <strong>Certificate #:</strong> {{ cert.certificate_number }}
+                    </p>
+                    {% if cert.event %}
+                    <p class="mb-1">
+                        <strong>Event:</strong> {{ cert.event.name }}
+                    </p>
+                    {% endif %}
+                    <p class="mb-1">
+                        <strong>Issued:</strong> {{ cert.issued_date|date:"M d, Y" }}
+                    </p>
+                    {% if cert.valid_until %}
+                    <p class="mb-1">
+                        <strong>Valid Until:</strong> {{ cert.valid_until|date:"M d, Y" }}
+                        {% if cert.is_valid %}
+                        <span class="badge bg-success">Valid</span>
+                        {% else %}
+                        <span class="badge bg-danger">Expired</span>
+                        {% endif %}
+                    </p>
+                    {% else %}
+                    <p class="mb-1">
+                        <strong>Valid Until:</strong> No expiration
+                        <span class="badge bg-success">Valid</span>
+                    </p>
+                    {% endif %}
+                    {% if cert.issued_by %}
+                    <p class="mb-0">
+                        <strong>Issued By:</strong> {{ cert.issued_by.get_full_name }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <p>You don't have any certificates yet.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

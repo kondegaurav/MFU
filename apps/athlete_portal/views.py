@@ -8,6 +8,59 @@ from apps.coach_portal.models import TrainingSession, TeamMember
 
 
 @login_required
+def athlete_detail(request, athlete_id):
+    """
+    View details of a specific athlete.
+    Accessible to: the athlete themselves, coaches, admins.
+    """
+    user = request.user
+    athlete = get_object_or_404(AthletePerson, id=athlete_id)
+    
+    # Permission check: only athlete themselves, coaches, or admins can view
+    has_permission = (
+        user == athlete.user or
+        user.has_role('coach') or
+        user.has_role('admin')
+    )
+    
+    if not has_permission:
+        from django.http import HttpResponseForbidden
+        return HttpResponseForbidden("You don't have permission to view this profile.")
+    
+    # Get athlete's rankings
+    rankings = AthleteRanking.objects.filter(
+        athlete=athlete,
+        is_active=True
+    ).order_by('-total_score')
+    
+    # Get athlete's recent scores
+    recent_scores = AthleteScore.objects.filter(
+        athlete=athlete
+    ).select_related('event').order_by('-recorded_at')[:10]
+    
+    # Get athlete's certificates
+    certificates = EvaluationCertificate.objects.filter(
+        athlete=athlete
+    ).order_by('-issued_date')
+    
+    # Get athlete's team memberships
+    team_memberships = TeamMember.objects.filter(
+        athlete=athlete,
+        removed_at__isnull=True
+    ).select_related('team')
+    
+    context = {
+        'athlete': athlete,
+        'rankings': rankings,
+        'recent_scores': recent_scores,
+        'certificates': certificates,
+        'team_memberships': team_memberships,
+    }
+    
+    return render(request, 'athlete_portal/athlete_detail.html', context)
+
+
+@login_required
 @require_roles('athlete')
 def athlete_dashboard(request):
     """Athlete dashboard showing personal stats and rankings."""
@@ -21,14 +74,13 @@ def athlete_dashboard(request):
     
     # Get athlete's rankings
     rankings = AthleteRanking.objects.filter(
-        athlete=athlete,
-        is_active=True
+        athlete=athlete
     ).order_by('-total_score')
     
     # Get athlete's recent scores
     recent_scores = AthleteScore.objects.filter(
         athlete=athlete
-    ).select_related('event').order_by('-scored_date')[:10]
+    ).select_related('event').order_by('-recorded_at')[:10]
     
     # Get athlete's certificates
     certificates = EvaluationCertificate.objects.filter(
@@ -38,18 +90,17 @@ def athlete_dashboard(request):
     # Get athlete's team memberships
     team_memberships = TeamMember.objects.filter(
         athlete=athlete,
-        is_active=True
+        removed_at__isnull=True
     ).select_related('team')
     
     # Get upcoming training sessions
-    team_ids = team_memberships.values_list('team_id', flat=True)
     from django.utils import timezone
     today = timezone.now().date()
     
     training_sessions = TrainingSession.objects.filter(
-        team__in=team_ids,
-        date__gte=today
-    ).order_by('date', 'time')[:5]
+        athletes=athlete,
+        start_time__date__gte=today
+    ).order_by('start_time')[:5]
     
     context = {
         'athlete': athlete,
@@ -91,7 +142,7 @@ def athlete_scores(request):
     
     scores = AthleteScore.objects.filter(
         athlete=athlete
-    ).select_related('event').order_by('-scored_date')
+    ).select_related('event').order_by('-recorded_at')
     
     context = {
         'athlete': athlete,
@@ -129,8 +180,8 @@ def athlete_teams(request):
     
     team_memberships = TeamMember.objects.filter(
         athlete=athlete,
-        is_active=True
-    ).select_related('team', 'team__head_coach')
+        removed_at__isnull=True
+    ).select_related('team', 'team__coach')
     
     context = {
         'athlete': athlete,
@@ -148,7 +199,7 @@ def athlete_events(request):
     
     event_registrations = EventRegistration.objects.filter(
         participant=user
-    ).select_related('event').order_by('-registration_date')
+    ).select_related('event').order_by('-registered_at')
     
     context = {
         'event_registrations': event_registrations,

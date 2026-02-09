@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 from apps.core.decorators.permissions import require_roles
 from .models import Parent, ParentChildRelation
 from apps.athlete_portal.models import AthletePerson, AthleteRanking, EvaluationCertificate, AthleteScore
-from apps.events.models import EventRegistration
 
 
 @login_required
@@ -61,8 +60,7 @@ def child_details(request, child_id):
     rankings = None
     if relation.can_view_rankings and child.age >= 12:
         rankings = AthleteRanking.objects.filter(
-            athlete=child,
-            is_active=True
+            athlete=child
         ).order_by('-total_score')
     
     # Get child's certificates (if parent has permission)
@@ -78,14 +76,7 @@ def child_details(request, child_id):
     if relation.can_view_scores:
         recent_scores = AthleteScore.objects.filter(
             athlete=child
-        ).select_related('event').order_by('-scored_date')[:10]
-    
-    # Get child's event registrations (if parent has permission)
-    event_registrations = None
-    if relation.can_view_events:
-        event_registrations = EventRegistration.objects.filter(
-            participant=child.user
-        ).select_related('event').order_by('-registration_date')[:10]
+        ).select_related('event').order_by('-recorded_at')[:10]
     
     context = {
         'parent': parent,
@@ -94,7 +85,6 @@ def child_details(request, child_id):
         'rankings': rankings,
         'certificates': certificates,
         'recent_scores': recent_scores,
-        'event_registrations': event_registrations,
     }
     
     return render(request, 'parent_portal/child_details.html', context)

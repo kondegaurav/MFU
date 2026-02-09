@@ -9,7 +9,7 @@ from .models import Equipment, EquipmentRequest, FinancialTransaction
 
 
 @login_required
-@require_roles('admin', 'finance_officer')
+@require_roles(['admin', 'finance_inventory'])
 def finance_dashboard(request):
     """Finance dashboard with financial statistics and transactions."""
     
@@ -62,7 +62,7 @@ def finance_dashboard(request):
 
 
 @login_required
-@require_roles('admin', 'finance_officer')
+@require_roles(['admin', 'finance_inventory'])
 def equipment_inventory(request):
     """Equipment inventory management."""
     equipment_list = Equipment.objects.all()
@@ -100,7 +100,7 @@ def equipment_inventory(request):
 
 
 @login_required
-@require_roles('admin', 'finance_officer')
+@require_roles(['admin', 'finance_inventory'])
 def equipment_requests(request):
     """Equipment request tracking."""
     requests_list = EquipmentRequest.objects.select_related('equipment', 'requested_by')
@@ -115,7 +115,7 @@ def equipment_requests(request):
     if type_filter:
         requests_list = requests_list.filter(request_type=type_filter)
     
-    requests_list = requests_list.order_by('-requested_date')
+    requests_list = requests_list.order_by('-request_date')
     
     context = {
         'requests_list': requests_list,
@@ -129,7 +129,7 @@ def equipment_requests(request):
 
 
 @login_required
-@require_roles('admin', 'finance_officer')
+@require_roles(['admin', 'finance_inventory'])
 def transactions_list(request):
     """Financial transactions list."""
     transactions = FinancialTransaction.objects.all()

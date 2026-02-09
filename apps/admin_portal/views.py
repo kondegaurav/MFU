@@ -16,7 +16,7 @@ from apps.finance_portal.models import FinancialTransaction
 
 
 @login_required
-@require_roles('admin', 'super_admin')
+@require_roles(['admin'])
 def admin_dashboard(request):
     """Admin dashboard with overall statistics and recent activity."""
     user = request.user
@@ -70,7 +70,7 @@ def admin_dashboard(request):
 
 
 @login_required
-@require_roles('admin', 'super_admin')
+@require_roles(['admin'])
 def centers_dashboard(request):
     """Centers management dashboard."""
     centers = Center.objects.annotate(
@@ -88,7 +88,7 @@ def centers_dashboard(request):
 
 
 @login_required
-@require_roles('admin', 'super_admin')
+@require_roles(['admin'])
 def events_dashboard(request):
     """Events management dashboard."""
     events = Event.objects.select_related('center').annotate(
@@ -115,7 +115,7 @@ def events_dashboard(request):
 
 
 @login_required
-@require_roles('admin', 'super_admin')
+@require_roles(['admin'])
 def users_dashboard(request):
     """User management dashboard."""
     athletes = AthletePerson.objects.select_related('user').order_by('-user__date_joined')

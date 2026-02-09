@@ -28,7 +28,8 @@
                         <h6 class="text-muted">Available Information</h6>
                         <div class="list-group">
                             {% if child_info.can_view_scores %}
-                            <a href="#" class="list-group-item list-group-item-action">
+                            <a href="{% url 'parent_portal:child_details' child_info.child.id %}"
+                                class="list-group-item list-group-item-action">
                                 <span class="badge bg-success float-end">Enabled</span>
                                 View Scores & Results
                             </a>

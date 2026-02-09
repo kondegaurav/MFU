@@ -10,7 +10,7 @@
             <h1 class="h2">Coach Dashboard</h1>
             <p class="text-muted">Welcome, {{ coach.user.get_full_name }}</p>
         </div>
-        {% if coach.is_head_coach %}
+        {% if coach.has_head_coach_privileges %}
         <div class="col-md-4 text-md-end">
             <span class="badge bg-success">Head Coach</span>
         </div>
