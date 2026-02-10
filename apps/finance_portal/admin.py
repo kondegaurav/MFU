@@ -19,14 +19,17 @@ class EquipmentAdmin(admin.ModelAdmin):
         ('Basic Information', {
             'fields': ('equipment_code', 'name', 'description', 'equipment_type')
         }),
-        ('Specifications', {
-            'fields': ('brand', 'model', 'serial_number')
+        ('Inventory Details', {
+            'fields': ('quantity', 'purchase_date', 'purchase_cost', 'supplier')
         }),
         ('Location', {
             'fields': ('center',)
         }),
         ('Condition & Maintenance', {
-            'fields': ('condition', 'status')
+            'fields': ('condition', 'status', 'last_maintenance_date', 'next_maintenance_date', 'warranty_expires')
+        }),
+        ('Additional Info', {
+            'fields': ('notes',)
         }),
     )
     readonly_fields = ('equipment_code',)
@@ -36,7 +39,7 @@ class EquipmentAdmin(admin.ModelAdmin):
 class EquipmentRequestAdmin(admin.ModelAdmin):
     list_display = ('equipment', 'request_date', 'request_type', 'status')
     list_filter = ('request_type', 'status')
-    search_fields = ('equipment__name', 'created_by__first_name')
+    search_fields = ('equipment__name', 'requested_by__first_name')
     readonly_fields = ('request_date',)
 
 
@@ -44,20 +47,19 @@ class EquipmentRequestAdmin(admin.ModelAdmin):
 class FinancialTransactionAdmin(admin.ModelAdmin):
     list_display = ('transaction_id', 'amount', 'transaction_type', 'transaction_date', 'status')
     list_filter = ('transaction_type', 'status', 'transaction_date', 'payment_method')
-    search_fields = ('transaction_id', 'description', 'related_to')
+    search_fields = ('transaction_id', 'description')
     readonly_fields = ('transaction_id', 'transaction_date')
     fieldsets = (
         ('Basic Information', {
-            'fields': ('transaction_id', 'transaction_type', 'amount', 'transaction_date')
+            'fields': ('transaction_id', 'transaction_type', 'amount', 'transaction_date', 'center')
         }),
         ('Details', {
-            'fields': ('description', 'related_to', 'reference_number')
+            'fields': ('description', 'event', 'payee')
         }),
         ('Payment Information', {
-            'fields': ('payment_method', 'payment_status', 'paid_by')
+            'fields': ('payment_method', 'payer')
         }),
         ('Status', {
-            'fields': ('status', 'notes')
+            'fields': ('status', 'recorded_by')
         }),
     )
-
